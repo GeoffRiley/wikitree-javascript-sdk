@@ -1,241 +1,244 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html lang="en" dir="ltr" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<meta name="robots" content="noindex, nofollow" />
-<title>WikiTree - Family Tree and Free Genealogy - wikitree-javascript-sdk - Example </title>
-<style type="text/css">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="robots" content="noindex, nofollow"/>
+  <title>WikiTree - Family Tree and Free Genealogy - wikitree-javascript-sdk - Example </title>
+  <style type="text/css">
 
-/* By default, show the need-login section and not the logged-in section */
-/* Note this is *not* security, it's convenience. Logged-in-ness is double-checked inside API functions. */
-/* The getPerson() function will fail if you try to retrieve a person that the viewing user is not allowed to view. */
+    /* By default, show the need-login section and not the logged-in section */
+    /* Note this is *not* security, it's convenience. Logged-in-ness is double-checked inside API functions. */
+    /* The getPerson() function will fail if you try to retrieve a person that the viewing user is not allowed to view. */
 
-BODY {
-	margin: 0;
-	padding: 0;
-	font-family: verdana, arial, sans-serif;
-	font-size: 13px;
-	background-color: #fff;
-}
+    BODY {
+      margin: 0;
+      padding: 0;
+      font-family: verdana, arial, sans-serif;
+      font-size: 13px;
+      background-color: #fff;
+    }
 
-P, DIV, TABLE {
-	font-family: verdana, arial, sans-serif;
-	font-size: 13px;
-}
+    P, DIV, TABLE {
+      font-family: verdana, arial, sans-serif;
+      font-size: 13px;
+    }
 
-#HEADLINE { 
-	clear: both;
-	margin: 0;
-	padding: 10px 5% 10px 12%;
-	text-align: left;
-}
+    #HEADLINE {
+      clear: both;
+      margin: 0;
+      padding: 10px 5% 10px 12%;
+      text-align: left;
+    }
 
-H1 {
-	font-family: calibri, verdana, arial, sans-serif;
-	font-weight: bold;
-	color: #253b2f;
-	background-color: #ffffff;
-	font-size: 32pt;
-	margin: 0;
-}
+    H1 {
+      font-family: calibri, verdana, arial, sans-serif;
+      font-weight: bold;
+      color: #253b2f;
+      background-color: #ffffff;
+      font-size: 32pt;
+      margin: 0;
+    }
 
-#CONTENT { 
-	clear: both;
-	margin: 0 5% 0 5%;
-	padding: 10px 5% 10px 5%;
-	background-color: #fff;
-}
-.MISC-PAGE {
-	border: 4px solid #b7c0cf;
-}
+    #CONTENT {
+      clear: both;
+      margin: 0 5% 0 5%;
+      padding: 10px 5% 10px 5%;
+      background-color: #fff;
+    }
 
-logged_in { 
-	display: none;
-}
-#need_login { 
-}
+    .MISC-PAGE {
+      border: 4px solid #b7c0cf;
+			overflow: auto;
+    }
 
-/* Make a box for our output, and put it next to a box where we'll dump some raw data for this demo. */
-#output {
-	margin-top:20px;
-	border:1px solid black;
-	background-color:f0f0f0;
-	padding:5px;
-	min-height:200px;
-	width: 300px;
-	float: left;
-}
-#raw { 
-	margin-top:20px;
-	margin-left:20px;
-	border:1px solid black;
-	background-color:f0f0f0;
-	padding:5px;
-	width: 400px;
-	min-height:200px;
-	max-height: 500px;
-	overflow: scroll;
-	float: left;
-}
+    #logged_in {
+      display: none;
+    }
 
-/* Make our names look like links, though we don't go anywhere else. */
-.pseudo_link { 
-	text-decoration: underline;
-	color: blue;
-	cursor: pointer;
-}
+    #need_login {
+    }
 
-</style>
+    /* Make a box for our output, and put it next to a box where we'll dump some raw data for this demo. */
+    #output {
+      margin-top: 20px;
+      border: 1px solid black;
+      background-color: #f0f0f0;
+      padding: 5px;
+      min-height: 200px;
+      width: 300px;
+      float: left;
+    }
 
-<!-- For convenience, use JQuery for our Ajax interactions with the API. Use the cookie module to grab any existing user id. --> 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script src="jquery.cookie.js"></script>
-<script src="wikitree.js"></script>
+    #raw {
+      margin-top: 20px;
+      margin-left: 20px;
+      border: 1px solid black;
+      background-color: #f0f0f0;
+      padding: 5px;
+      width: 400px;
+      min-height: 200px;
+      max-height: 500px;
+      overflow: scroll;
+      float: left;
+    }
 
-<script type="text/javascript">
+    /* Make our names look like links, though we don't go anywhere else. */
+    .pseudo_link {
+      text-decoration: underline;
+      color: blue;
+      cursor: pointer;
+    }
+  </style>
 
-// In the ready() function we run some code when the DOM is ready to go.
-$(document).ready(function(){ 
+  <!-- For convenience, use JQuery for our Ajax interactions with the API. Use the cookie module to grab any existing user id. -->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" type="text/javascript"></script>
+  <script type="text/javascript"
+          src="//cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+  <script src="wikitree.js" type="text/javascript"></script>
 
-    wikitree.init({});
-    wikitree.session.checkLogin({})
-        .then(function(data) { 
-            if (wikitree.session.loggedIn) { 
-                /* We're already logged in and have a valid session. */
-                $('#need_login').hide();
-                $('#logged_in').show();
-            }           
-            else {      
-                /* We're not yet logged in, but maybe we've been returned-to with an auth-code */ 
-                var x = window.location.href.split('?');
-                var queryParams = new URLSearchParams( x[1] );
-                if (queryParams.has('authcode')) { 
-                    var authcode = queryParams.get('authcode');
-                    wikitree.session.clientLogin( {'authcode': authcode}  )
-                        .then(function(data) {  
-                            if (wikitree.session.loggedIn) { 
-                                /* If the auth-code was cood, redirect back to ourselves without the authcode in the URL (don't want it bookmarked, etc). */
-                                window.location = 'index.html';
-                            }                           
-                            else {                      
-                                $('#need_login').show();        
-                                $('#logged_in').hide();         
-                            }                           
-                        });                     
-                } else {        
-                    $('#need_login').show();
-                    $('#logged_in').hide();
-                }               
-            }           
-        });     
+  <script type="text/javascript">
 
-});
+      // In the ready() function we run some code when the DOM is ready to go.
+      $(document).ready(function () {
 
-// Given a user id, "walk" that user by retrieving their data and sticking it into the page.
-function walk(user_id) { 
+          wikitree.init({});
+          wikitree.session.checkLogin({})
+              .then(function (data) {
+                  if (wikitree.session.loggedIn) {
+                      /* We're already logged in and have a valid session. */
+                      $('#need_login').hide();
+                      $('#logged_in').show();
+                  } else {
+                      /* We're not yet logged in, but maybe we've been returned-to with an auth-code */
+                      var x = window.location.href.split('?');
+                      var queryParams = new URLSearchParams(x[1]);
+                      if (queryParams.has('authcode')) {
+                          var authcode = queryParams.get('authcode');
+                          wikitree.session.clientLogin({'authcode': authcode})
+                              .then(function (data) {
+                                  if (wikitree.session.loggedIn) {
+                                      /* If the auth-code was cood, redirect back to ourselves without the authcode in the URL (don't want it bookmarked, etc). */
+                                      window.location = 'index.html';
+                                  } else {
+                                      $('#need_login').show();
+                                      $('#logged_in').hide();
+                                  }
+                              });
+                      } else {
+                          $('#need_login').show();
+                          $('#logged_in').hide();
+                      }
+                  }
+              });
 
-	// If we don't have a user_id, use the one from the cookie (the one for the logged-in user).
-	if (!user_id) { 
-		user_id = $.cookie('wikitree_wtb_UserID');
-	}
+      });
 
-	// Go get the person data. 
-	var p = new wikitree.Person( { user_id: user_id } );
-	p.load({ fields: 'Id,Name,FirstName,MiddleName,LastNameAtBirth,LastNameCurrent,BirthDate,DeathDate,Father,Mother,Parents,Children'}).then(function(data){
-		// Raw JSON results dumped to display div
-		$('#raw').html("<h2>Raw Results</h2>\n<pre>"+JSON.stringify(data, null, 4)+"</pre>");
+      // Given a user id, "walk" that user by retrieving their data and sticking it into the page.
+      function walk(user_id) {
 
-		//<h2 id="walk_name"></h2>
-		$('#walk_name').html( p.FirstName + ' ' + p.LastNameCurrent );
+          // If we don't have a user_id, use the one from the cookie (the one for the logged-in user).
+          if (!user_id) {
+              user_id = getCookieDef('wikitree_wtb_UserID','');
+          }
 
-		//Father: <span id="walk_father"></span><br>
-		if (p.Parents[p.Father]) { 
-			var f = p.Parents[p.Father];
-			$('#walk_father').html( "<span class='pseudo_link' onClick='walk("+f.Id+");'>"+f.FirstName + ' ' + f.LastNameCurrent+"</span>" );
-		} else { 
-			$('#walk_father').html('');
-		}
+          // Go get the person data.
+          var p = new Person({user_id: user_id});
+          p.load({fields: 'Id,Name,FirstName,MiddleName,LastNameAtBirth,LastNameCurrent,BirthDate,DeathDate,Father,Mother,Parents,Children'}).then(function (data) {
+              // Raw JSON results dumped to display div
+              $('#raw').html("<h2>Raw Results</h2>\n<pre>" + JSON.stringify(data, null, 4) + "</pre>");
 
-		//Mother: <span id="walk_mother"></span><br>
-		if (p.Parents[p.Mother]) { 
-			var m = p.Parents[p.Mother];
-			$('#walk_mother').html( "<span class='pseudo_link' onClick='walk("+m.Id+");'>"+m.FirstName + ' ' + m.LastNameCurrent+"</span>" );
-		} else {
-			$('#walk_mother').html('');
-		}
+              //<h2 id="walk_name"></h2>
+              $('#walk_name').html(p.FirstName + ' ' + p.LastNameCurrent);
 
-		//Children: <span id="walk_children"></span><br>
-		if (p.Children) { 
-			var html = '';
-			for (cid in p.Children) { 
-				var c = p.Children[cid];	
-				if (html != '') { html += ' / '; }
-				html += "<span class='pseudo_link' onClick='walk("+c.Id+");'>"+c.FirstName + ' ' + c.LastNameCurrent+"</span>";
-			}
-			$('#walk_children').html(html);
-		} else { 
-			$('#walk_mother').html('');
-		}
+              //Father: <span id="walk_father"></span><br>
+              if (p.Parents[p.Father]) {
+                  var f = p.Parents[p.Father];
+                  $('#walk_father').html("<span class='pseudo_link' onClick='walk(" + f.Id + ");'>" + f.FirstName + ' ' + f.LastNameCurrent + "</span>");
+              } else {
+                  $('#walk_father').html('');
+              }
 
-	});
-}
+              //Mother: <span id="walk_mother"></span><br>
+              if (p.Parents[p.Mother]) {
+                  var m = p.Parents[p.Mother];
+                  $('#walk_mother').html("<span class='pseudo_link' onClick='walk(" + m.Id + ");'>" + m.FirstName + ' ' + m.LastNameCurrent + "</span>");
+              } else {
+                  $('#walk_mother').html('');
+              }
 
-// Log the user out of apps.wikitree.com by deleting all the cookies
-function appsLogout() { 
-	wikitree.session.logout();
-	document.location.href = 'http://apps.wikitree.com/apps/casey1/wikitree-javascript-sdk/';
-}
-</script>
+              //Children: <span id="walk_children"></span><br>
+              if (p.Children) {
+                  var html = '';
+                  for (cid in p.Children) {
+                      var c = p.Children[cid];
+                      if (html !== '') {
+                          html += ' / ';
+                      }
+                      html += "<span class='pseudo_link' onClick='walk(" + c.Id + ");'>" + c.FirstName + ' ' + c.LastNameCurrent + "</span>";
+                  }
+                  $('#walk_children').html(html);
+              } else {
+                  $('#walk_mother').html('');
+              }
+          });
+      }
+
+      // Log the user out of apps.wikitree.com by deleting all the cookies
+      function appsLogout() {
+          wikitree.session.logout();
+          document.location.href = 'http://apps.wikitree.com/apps/riley9287/wikitree-javascript-sdk/';
+      }
+  </script>
 
 </head>
-
 <body class="mediawiki ns-0 ltr page-Main_Page">
 
 <div id="HEADLINE">
-	<h1>wikitree-javascript-sdk/index.html</h1>
+  <h1>wikitree-javascript-sdk/index.html</h1>
 </div>
 
 <div id="CONTENT" class="MISC-PAGE">
 
+  <!-- This div is shown if the user is logged in. -->
+  <div id="logged_in">
+    <p>
+      You are logged in to WikiTree. You can <span class="pseudo_link" onClick="appsLogout();">logout</span>.
+      You can "walk" through your family tree by clicking on the names below. The right-side will show the raw JSON
+      output of the Person.load and related calls used at each step.
+      Or you can return to <a href="http://apps.wikitree.com/apps/">Apps</a>.
+    </p>
 
+    <!-- This div has the spans filled in by our walk() function. -->
+    <div id="output">
+      <h2 id="walk_name"></h2>
+      Father: <span id="walk_father"></span><br>
+      Mother: <span id="walk_mother"></span><br>
+      Children: <span id="walk_children"></span><br>
 
-<!-- This div is shown if the user is logged in. -->
-<div id="logged_in">
-	<p>
-	You are logged in to WikiTree. You can <span style="cursor:pointer;color:blue;text-decoration:underline;" onClick="appsLogout();">logout</span>.
-	You can "walk" through your family tree by clicking on the names below. The right-side will show the raw JSON output of the Person.load and related calls used at each step.
-	Or you can return to <a href="http://apps.wikitree.com/apps/">Apps</a>.
-	</p>
+      <br><br>
+      <span class="pseudo_link" onClick="walk()">Restart with your profile</span>
+    </div>
 
-	<!-- This div has the spans filled in by our walk() function. -->
-	<div id="output">
-		<h2 id="walk_name"></h2>
-		Father: <span id="walk_father"></span><br>
-		Mother: <span id="walk_mother"></span><br>
-		Children: <span id="walk_children"></span><br>
+    <!-- This div will hold the raw JSON output from a walk() call. -->
+    <div id="raw"></div>
 
-		<br><br>
-		<span class="pseudo_link" onClick="walk()">Restart with your profile</span>
-	</div>
+    <br clear=both/>
+  </div>
 
-	<!-- This div will hold the raw JSON output from a walk() call. -->
-	<div id="raw"> </div>
-
-	<br clear=both>
-</div>
-
-<!-- This div is shown if the user is not logged in. -->
-<div id="need_login">
-	<p>
-	You are not currently logged in to apps.wikitree.com. In order to access your WikiTree ancestry, please sign in with your WikiTree.com credentials.
+  <!-- This div is shown if the user is not logged in. -->
+  <div id="need_login">
+    <p>
+      You are not currently logged in to apps.wikitree.com. In order to access your WikiTree ancestry, please sign in
+      with your WikiTree.com credentials.
+    </p>
     <form action="https://apps.wikitree.com/api.php" method="POST">
-    <input type="hidden" name="action" value="clientLogin">
-    <input type="hidden" name="returnURL" value="https://apps.wikitree.com/apps/casey1/wikitree-javascript-sdk/index.html">
-    <input type="submit" class="button" value="Client Login">
+      <input type="hidden" name="action" value="clientLogin">
+      <input type="hidden" name="returnURL"
+             value="https://apps.wikitree.com/apps/riley9287/wikitree-javascript-sdk/index.html">
+      <input type="submit" class="button" value="Client Login">
     </form>
 
-	</p>
-</div>
+  </div>
 
 </div>
 
