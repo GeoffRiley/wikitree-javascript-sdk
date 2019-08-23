@@ -9,24 +9,29 @@ Javascript library to work with the WikiTree API functions.
 * jQuery Cookie Plugin 2.2.1 or later (https://github.com/js-cookie/js-cookie)
 
 ## Usage
-````javascript
+````html
 // Load scripts
 <script src="//ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="//cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
 <script src="wikitree.js"></script>
 
 <script type="text/javascript">
+    wikitree.init({});
+    wikitree.session.checkLogin().then(function(result){
+        result.login.result ; // "NoName" on error OR user_id (integer) on success 
+    });
 
-	wikitree.init({});
-	wikitree.session.checkLogin().then(function(data){ ... });
+    wikitree.session.login( { email: 'xxx', password: 'yyyy' }).then(function(result) {
+        result.login.result ; // "Success" on success OR other for error
+        // When successful:
+        result.login.userid ; // user_id (integer)
+        result.login.username ; // user_name (string)
+    });
 
-	wikitree.session.login( { email: 'xxx', password: 'yyyy' }).then(function(data) {
-	});
-
-	const p = new Person( { user_id: nnnnn } );
-	p.load({}).then(function(data){ 
-	});
-
+    const p = new Person( { user_id: 999999 } );
+    p.load({}).then(function(result){ 
+        result
+    });
 </script>
 ````
 ## Example

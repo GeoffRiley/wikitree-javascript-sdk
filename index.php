@@ -146,9 +146,9 @@ $script = $_SERVER['PHP_SELF'];
 
           // Go get the person data.
           const p = new Person({user_id: user_id});
-          p.load({fields: 'Id,Name,FirstName,MiddleName,LastNameAtBirth,LastNameCurrent,BirthDate,DeathDate,Father,Mother,Parents,Children'}).then(function (data) {
+          p.load({fields: 'Id,Name,FirstName,MiddleName,LastNameAtBirth,LastNameCurrent,BirthDate,DeathDate,Father,Mother,Parents,Children'}).then(function (result) {
               // Raw JSON results dumped to display div
-              $('#raw').html("<h2>Raw Results</h2>\n<pre>" + JSON.stringify(data, null, 4) + "</pre>");
+              $('#raw').html("<h2>Raw Results</h2><br/><pre>" + JSON.stringify(result, null, 4) + "</pre>");
 
               //<h2 id="walk_name"></h2>
               $('#walk_name').html(p.FirstName + ' ' + p.LastNameCurrent);

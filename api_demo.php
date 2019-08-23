@@ -84,7 +84,7 @@ $script = $_SERVER['PHP_SELF'];
       // This function retrieves person information. The "key" that is sent to the API "getPerson" action can be a numeric user_id or the
       // WikiTreeID (e.g. Adams-35). The output here is just dumped into a div for display.
       function getPerson(user_id_or_name, fields) {
-          // Add to our putput what we're looking for.
+          // Add to our output what we're looking for.
           $('#output').html('The user id/name provided is:' + user_id_or_name);
 
           // Go get the person data.
@@ -156,7 +156,7 @@ $script = $_SERVER['PHP_SELF'];
 
       // This function retrieves person/space information.
       function getProfile(key, fields) {
-          // Add to our putput what we're looking for.
+          // Add to our output what we're looking for.
           $('#output').html(`The key provided is:${key}`);
 
           // Go get the person data.
@@ -178,7 +178,7 @@ $script = $_SERVER['PHP_SELF'];
 
       // This function retrieves person bio
       function getBio(key) {
-          // Add to our putput what we're looking for.
+          // Add to our output what we're looking for.
           $('#output').html(`The key provided is:${key}`);
 
           // Go get the person data.
@@ -200,7 +200,7 @@ $script = $_SERVER['PHP_SELF'];
 
       // This function retrieves ancestors for a profile
       function getAncestors(key, depth) {
-          // Add to our putput what we're looking for.
+          // Add to our output what we're looking for.
           $('#output').html(`The key provided is:${key}<br/>The depth provided is:${depth}<br/>`);
 
           // Go get the person data.
@@ -223,7 +223,7 @@ $script = $_SERVER['PHP_SELF'];
       // Retrieve relatives of one or more id.
       function getRelatives(keys, getParents, getSpouses, getChildren, getSiblings) {
 
-          // Add to our putput what we're looking for.
+          // Add to our output what we're looking for.
           $('#output').html(`The keys provided are:${keys}<br/>Get Parents:${getParents}<br/>Get Spouses:${getSpouses}<br/>Get Children:${getChildren}<br/>Get Siblings:${getSiblings}<br/>`);
 
           $.ajax({
@@ -250,7 +250,7 @@ $script = $_SERVER['PHP_SELF'];
           });
       }
 
-      // Retrieve DNA TEsts for a profile
+      // Retrieve DNA Tests for a profile
       function getDNATestsByTestTaker() {
 
 				const key = $('#key').val();
@@ -444,7 +444,7 @@ $script = $_SERVER['PHP_SELF'];
     <blockquote>
       <form action="#" onSubmit='return false'>
         User ID or Name: <input type=text id="key3" name="key3" value="" size=30> (e.g. "32" or "Whitten-1")<br/>
-        <input type=button value="Get Conected DNA Tests" onClick="getConnectedDNATestsByProfile()">
+        <input type=button value="Get Connected DNA Tests" onClick="getConnectedDNATestsByProfile()">
       </form>
     </blockquote>
 
