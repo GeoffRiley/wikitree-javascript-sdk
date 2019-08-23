@@ -11,7 +11,7 @@ Javascript library to work with the WikiTree API functions.
 ## Usage
 ````javascript
 // Load scripts
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="//cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
 <script src="wikitree.js"></script>
 
@@ -20,10 +20,10 @@ Javascript library to work with the WikiTree API functions.
 	wikitree.init({});
 	wikitree.session.checkLogin().then(function(data){ ... });
 
-	wikitree.session.log( { email: 'xxx', password: 'yyyy' }).then(function(data) {
+	wikitree.session.login( { email: 'xxx', password: 'yyyy' }).then(function(data) {
 	});
 
-	var p = new wikitree.Person( { user_id: #### } );
+	const p = new Person( { user_id: nnnnn } );
 	p.load({}).then(function(data){ 
 	});
 

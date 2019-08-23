@@ -1,4 +1,7 @@
 <!DOCTYPE html>
+<?php
+$script = $_SERVER['PHP_SELF'];
+?>
 <html lang="en" dir="ltr" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -48,7 +51,7 @@
 
     .MISC-PAGE {
       border: 4px solid #b7c0cf;
-			overflow: auto;
+      overflow: auto;
     }
 
     #logged_in {
@@ -91,10 +94,9 @@
   </style>
 
   <!-- For convenience, use JQuery for our Ajax interactions with the API. Use the cookie module to grab any existing user id. -->
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" type="text/javascript"></script>
-  <script type="text/javascript"
-          src="//cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
-  <script src="wikitree.js" type="text/javascript"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+  <script src="wikitree.js"></script>
 
   <script type="text/javascript">
 
@@ -110,14 +112,14 @@
                       $('#logged_in').show();
                   } else {
                       /* We're not yet logged in, but maybe we've been returned-to with an auth-code */
-                      var x = window.location.href.split('?');
-                      var queryParams = new URLSearchParams(x[1]);
+                      const x = window.location.href.split('?');
+                      const queryParams = new URLSearchParams(x[1]);
                       if (queryParams.has('authcode')) {
-                          var authcode = queryParams.get('authcode');
+                          const authcode = queryParams.get('authcode');
                           wikitree.session.clientLogin({'authcode': authcode})
                               .then(function (data) {
                                   if (wikitree.session.loggedIn) {
-                                      /* If the auth-code was cood, redirect back to ourselves without the authcode in the URL (don't want it bookmarked, etc). */
+                                      /* If the auth-code was good, redirect back to ourselves without the authcode in the URL (don't want it bookmarked, etc). */
                                       window.location = 'index.html';
                                   } else {
                                       $('#need_login').show();
@@ -130,6 +132,7 @@
                       }
                   }
               });
+          $('#login-name').text(wikitree.session.user_name);
 
       });
 
@@ -138,11 +141,11 @@
 
           // If we don't have a user_id, use the one from the cookie (the one for the logged-in user).
           if (!user_id) {
-              user_id = getCookieDef('wikitree_wtb_UserID','');
+              user_id = getCookieDef('wikitree_wtb_UserID', '');
           }
 
           // Go get the person data.
-          var p = new Person({user_id: user_id});
+          const p = new Person({user_id: user_id});
           p.load({fields: 'Id,Name,FirstName,MiddleName,LastNameAtBirth,LastNameCurrent,BirthDate,DeathDate,Father,Mother,Parents,Children'}).then(function (data) {
               // Raw JSON results dumped to display div
               $('#raw').html("<h2>Raw Results</h2>\n<pre>" + JSON.stringify(data, null, 4) + "</pre>");
@@ -152,7 +155,7 @@
 
               //Father: <span id="walk_father"></span><br>
               if (p.Parents[p.Father]) {
-                  var f = p.Parents[p.Father];
+                  const f = p.Parents[p.Father];
                   $('#walk_father').html("<span class='pseudo_link' onClick='walk(" + f.Id + ");'>" + f.FirstName + ' ' + f.LastNameCurrent + "</span>");
               } else {
                   $('#walk_father').html('');
@@ -160,7 +163,7 @@
 
               //Mother: <span id="walk_mother"></span><br>
               if (p.Parents[p.Mother]) {
-                  var m = p.Parents[p.Mother];
+                  const m = p.Parents[p.Mother];
                   $('#walk_mother').html("<span class='pseudo_link' onClick='walk(" + m.Id + ");'>" + m.FirstName + ' ' + m.LastNameCurrent + "</span>");
               } else {
                   $('#walk_mother').html('');
@@ -168,9 +171,9 @@
 
               //Children: <span id="walk_children"></span><br>
               if (p.Children) {
-                  var html = '';
-                  for (cid in p.Children) {
-                      var c = p.Children[cid];
+                  let html = '';
+                  for (let cid in p.Children) {
+                      const c = p.Children[cid];
                       if (html !== '') {
                           html += ' / ';
                       }
@@ -186,15 +189,16 @@
       // Log the user out of apps.wikitree.com by deleting all the cookies
       function appsLogout() {
           wikitree.session.logout();
-          document.location.href = 'http://apps.wikitree.com/apps/riley9287/wikitree-javascript-sdk/';
+          document.location.href = 'http://apps.wikitree.com/<?php echo $script; ?>';
       }
   </script>
 
 </head>
 <body class="mediawiki ns-0 ltr page-Main_Page">
+<?php include "/home/apps/www/header.htm"; ?>
 
 <div id="HEADLINE">
-  <h1>wikitree-javascript-sdk/index.html</h1>
+  <h1><?php echo $script; ?></h1>
 </div>
 
 <div id="CONTENT" class="MISC-PAGE">
@@ -202,7 +206,8 @@
   <!-- This div is shown if the user is logged in. -->
   <div id="logged_in">
     <p>
-      You are logged in to WikiTree. You can <span class="pseudo_link" onClick="appsLogout();">logout</span>.
+      You are logged in to WikiTree as <span id="login-name">N</span>.
+      You can <span class="pseudo_link" onClick="appsLogout();">logout</span>.
       You can "walk" through your family tree by clicking on the names below. The right-side will show the raw JSON
       output of the Person.load and related calls used at each step.
       Or you can return to <a href="http://apps.wikitree.com/apps/">Apps</a>.
@@ -211,18 +216,17 @@
     <!-- This div has the spans filled in by our walk() function. -->
     <div id="output">
       <h2 id="walk_name"></h2>
-      Father: <span id="walk_father"></span><br>
-      Mother: <span id="walk_mother"></span><br>
-      Children: <span id="walk_children"></span><br>
-
-      <br><br>
+      Father: <span id="walk_father"></span><br/>
+      Mother: <span id="walk_mother"></span><br/>
+      Children: <span id="walk_children"></span><br/>
+      <br/>
       <span class="pseudo_link" onClick="walk()">Restart with your profile</span>
     </div>
 
     <!-- This div will hold the raw JSON output from a walk() call. -->
     <div id="raw"></div>
 
-    <br clear=both/>
+    <div style="clear:both;"></div>
   </div>
 
   <!-- This div is shown if the user is not logged in. -->
@@ -234,7 +238,7 @@
     <form action="https://apps.wikitree.com/api.php" method="POST">
       <input type="hidden" name="action" value="clientLogin">
       <input type="hidden" name="returnURL"
-             value="https://apps.wikitree.com/apps/riley9287/wikitree-javascript-sdk/index.html">
+             value="https://apps.wikitree.com/<?php echo $script; ?>">
       <input type="submit" class="button" value="Client Login">
     </form>
 
@@ -242,5 +246,6 @@
 
 </div>
 
+<?php include "/home/apps/www/footer.htm"; ?>
 </body>
 </html>
